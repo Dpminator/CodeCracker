@@ -22,12 +22,12 @@ import java.util.jar.JarFile;
 
 
 
-
 public class main 
 {
 	static Scanner keyboard = new Scanner(System.in).useDelimiter("\\n");
 	static final char[] Alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	static boolean LettersAvailable[] = new boolean[26];
+	
 	
 	public static void CreateHtmlResults(int GridHeight, int GridWidth, int[][] Grid, char NumToLetterCode[], String PuzzleNote) throws FileNotFoundException
 	{
