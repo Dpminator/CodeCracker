@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
@@ -525,7 +526,44 @@ public class main
 			for (int i = 0; i < WordsWithLowBlanks.size(); i++)
 			{
 				System.out.print("Searching word " + (i+1) + " out of " + WordsWithLowBlanks.size());
-				int Test = WordsWithLowBlanks.get(i).FindPossibleSolutions(WordsWithLowBlanks.get(i).UniqueBlanks(), WordsWithLowBlanks.get(i).ToSearchableWord(), 1, LettersAvailable, Alphabet, 0);
+				
+				
+				
+				
+				/*Changes start here*/
+				int Test;
+				int WordLength = WordsWithLowBlanks.get(i).Letters;
+				int Blanks = WordsWithLowBlanks.get(i).UniqueBlanks();
+				int LettersMissing = 0;
+
+				for (int j =0; j < 26; j++)
+				{
+					if (NumToLetterCode[j] == ' ')
+					{
+						LettersMissing++;
+					}
+				}
+				
+				LineNumberReader  lnr = new LineNumberReader(new FileReader(new File(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt")));
+				lnr.skip(Long.MAX_VALUE);
+				int LineCount = lnr.getLineNumber() + 1;
+				
+				
+				
+				if (Math.pow(LettersMissing, Blanks) > LineCount) 
+				{
+					Test = WordsWithLowBlanks.get(i).FindPossibleSolutions(Blanks, WordsWithLowBlanks.get(i).ToSearchableWord()); //THIS IS THE NEW THING
+				}else
+				{
+					Test = WordsWithLowBlanks.get(i).FindPossibleSolutions(Blanks, WordsWithLowBlanks.get(i).ToSearchableWord(), 1, LettersAvailable, Alphabet, 0);
+				}
+				
+				
+				
+				
+				/*Changes end here*/
+				
+				
 				System.out.println(" - " + WordsWithLowBlanks.get(i).ToSearchableWord().toUpperCase() + " has " + Test + " solutions");
 				if (Test < LowSolutions && Test != 0)
 				{

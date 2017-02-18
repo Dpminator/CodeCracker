@@ -57,31 +57,25 @@ public class Word
 	
 	public static boolean CheckWord(String TestingWord) throws IOException
 	{
-		BufferedReader[] Input = new BufferedReader[8];
+		BufferedReader Input;
         String ReadWord;
-        
-        for (int i = 0; i < Input.length; i++)
-		{
-			Input[i] =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + (i+3) + ".txt"));
-		}
-        
         int WordLength = TestingWord.length();
-        if (WordLength > 10 || WordLength < 1)
+        
+        if (WordLength > 10)
         {
-        	WordLength = 9;
+        	WordLength = 10;
         }
         
-        while ((ReadWord = Input[WordLength - 3].readLine()) != null) 
+        Input =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt"));
+        
+        while ((ReadWord = Input.readLine()) != null) 
         {
             if (ReadWord.indexOf(TestingWord) != -1) 
             {
                 return true;
             }
         }
-        for (int i = 0; i < Input.length; i++)
-		{
-        	Input[i].close();
-		}
+        Input.close();
         return false;
 	}
 	
@@ -206,6 +200,52 @@ public class Word
 				continue;
 			}
 		}
+		return Solutions;
+	}
+	
+	public int FindPossibleSolutions(int Blanks, String CodedWord) throws IOException 
+	{
+		int WordLength = CodedWord.length();
+		BufferedReader Input =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt"));
+		String DictionaryWord;
+		int Solutions = 0;
+		
+		while ((DictionaryWord = Input.readLine()) != null)//Does the CodedWord match up with the dictionary word?
+		{
+			char BlankChar[] = {' ', ' ', ' ', ' '};
+			boolean Match = true;
+			for (int i = 0; i < WordLength; i++)
+			{
+				if (Character.isAlphabetic(CodedWord.charAt(i)))
+				{
+					if (CodedWord.charAt(i) != DictionaryWord.charAt(i))
+					{
+						Match = false;
+						break;
+					}
+				}else
+				{
+					int BlankNumber = Integer.parseInt("" + CodedWord.charAt(i)) - 1;
+					if (BlankChar[BlankNumber] == ' ')
+					{
+						BlankChar[BlankNumber] = DictionaryWord.charAt(i);
+					}else
+					{
+						if (BlankChar[BlankNumber] != DictionaryWord.charAt(i))
+						{
+							Match = false;
+							break;
+						}
+					}
+				}
+			}
+			if (Match)
+			{
+				Solutions++;
+				PossibleSolutions.add(DictionaryWord);
+			}
+		}
+		Input.close();
 		return Solutions;
 	}
 	
