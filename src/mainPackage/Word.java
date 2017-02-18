@@ -209,6 +209,7 @@ public class Word
 		BufferedReader Input =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt"));
 		String DictionaryWord;
 		int Solutions = 0;
+		PossibleSolutions.clear();
 		
 		while ((DictionaryWord = Input.readLine()) != null)//Does the CodedWord match up with the dictionary word?
 		{
@@ -228,8 +229,12 @@ public class Word
 					int BlankNumber = Integer.parseInt("" + CodedWord.charAt(i)) - 1;
 					if (BlankChar[BlankNumber] == ' ')
 					{
+						if (!LettersAvailable[main.AlphabetLetterToNum(DictionaryWord.charAt(i)) - 1])
+						{
+							Match = false;
+							break;
+						}
 						BlankChar[BlankNumber] = DictionaryWord.charAt(i);
-						continue;
 					}else
 					{
 						if (BlankChar[BlankNumber] != DictionaryWord.charAt(i) || !LettersAvailable[main.AlphabetLetterToNum(DictionaryWord.charAt(i)) - 1])
