@@ -203,7 +203,7 @@ public class Word
 		return Solutions;
 	}
 	
-	public int FindPossibleSolutions(int Blanks, String CodedWord) throws IOException 
+	public int FindPossibleSolutions(int Blanks, String CodedWord, boolean[] LettersAvailable) throws IOException 
 	{
 		int WordLength = CodedWord.length();
 		BufferedReader Input =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt"));
@@ -229,9 +229,10 @@ public class Word
 					if (BlankChar[BlankNumber] == ' ')
 					{
 						BlankChar[BlankNumber] = DictionaryWord.charAt(i);
+						continue;
 					}else
 					{
-						if (BlankChar[BlankNumber] != DictionaryWord.charAt(i))
+						if (BlankChar[BlankNumber] != DictionaryWord.charAt(i) || !LettersAvailable[main.AlphabetLetterToNum(DictionaryWord.charAt(i)) - 1])
 						{
 							Match = false;
 							break;
