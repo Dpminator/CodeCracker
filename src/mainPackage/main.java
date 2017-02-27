@@ -177,37 +177,6 @@ public class main
 		}	
 	}
 	
-	public static void PrintWords(int Loops, String ProcessingWord, int RecursiveLevel) throws IOException
-	{
-		for (int i = 0; i < 26; i++)
-		{
-			String NewWord = ProcessingWord.toUpperCase();
-			if (LettersAvailable[i])
-			{
-				LettersAvailable[i] = false;
-				char ReplaceNum = (RecursiveLevel + "").charAt(0);
-				NewWord = NewWord.replace(ReplaceNum, Alphabet[i]);
-				NewWord = NewWord.toLowerCase();
-				if (Loops > 1)
-				{
-					Loops--;
-					PrintWords(Loops, NewWord, RecursiveLevel+1);
-					Loops++;
-				}else
-				{
-					if (Word.CheckWord(NewWord))
-					{
-						System.out.println(NewWord);
-					}
-				}
-				LettersAvailable[i] = true;
-			}else
-			{
-				continue;
-			}
-		}
-	} 
-	
 	@SuppressWarnings("unchecked")
 	public static boolean ImportGrid() throws IOException
 	{
@@ -525,8 +494,7 @@ public class main
 			for (int i = 0; i < WordsWithLowBlanks.size(); i++)
 			{
 				System.out.print("Searching word " + (i+1) + " out of " + WordsWithLowBlanks.size());
-				int Blanks = WordsWithLowBlanks.get(i).UniqueBlanks();
-				int Test = WordsWithLowBlanks.get(i).FindPossibleSolutions(Blanks, WordsWithLowBlanks.get(i).ToSearchableWord(), LettersAvailable);
+				int Test = WordsWithLowBlanks.get(i).FindPossibleSolutions(WordsWithLowBlanks.get(i).ToSearchableWord(), LettersAvailable);
 				System.out.println(" - " + WordsWithLowBlanks.get(i).ToSearchableWord().toUpperCase() + " has " + Test + " solutions");
 				if (Test < LowSolutions && Test != 0)
 				{
@@ -721,7 +689,7 @@ public class main
 				}else
 				{
 					//This only happens if the letters from all the guessed words (even the correct one) do not lead to a 1 solution word
-					System.out.println("Bad!");
+					System.out.println("Bad! (This shouldn't happen and only happens if there is a bug!)");
 					break;
 				}
 			}
@@ -1022,12 +990,12 @@ public class main
 							break;
 						}
 						double StartTime = System.nanoTime();
-						PrintWords(Blanks, code, 1);
+						System.out.println("There were " + Word.FindSolutions(code.toLowerCase(), LettersAvailable) + " solutions!");
 						double TimeTaken = ((double)System.nanoTime() - StartTime)/ 1000000000;
 						System.out.println("This search took " + TimeTaken + " seconds");
 					}else
 					{
-						if (Word.CheckWord(code.toLowerCase()))
+						if (Word.FindSolutions(code.toLowerCase(), LettersAvailable) > 0)
 						{
 							System.out.println(code.toLowerCase() + " is in the dictionary!");
 						}else

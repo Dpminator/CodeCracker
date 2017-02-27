@@ -12,6 +12,7 @@ public class Word
 	protected int[] Code;											//An array (size = letters) that has each int of the code
 	protected char[] DecodedLetters;								//An Array (size = letters) that has the decoded letters of the code (or a ? where it isn't solved)
 	protected boolean Found;										//A boolean to see if the word is complete or not
+	protected boolean Dummy = false;								//A boolean to denote whether this object is a dummy
 	protected boolean[] HasNumber;									//A boolean array (size = 26) that says whether the word has the NUMBER (not the letter of the alphabet)
 	protected boolean[] LetterFound = new boolean[26];				//A boolean array (size = 26) to say whether that letter is found (
 	ArrayList<String> PossibleSolutions = new ArrayList<String>();	//An ArrayList of all the possible solutions
@@ -28,6 +29,11 @@ public class Word
 		HasNumber = CheckNumbers(Code);
 	}	
 	
+	Word() 
+	{
+		this.Dummy = true;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void Copy(Word OtherWord)
 	{
@@ -170,40 +176,13 @@ public class Word
 		return FixedWord.toLowerCase();
 	}
 	
-	public int FindPossibleSolutions(int Loops, String Word, int RecursiveLevel, boolean[] LettersAvailable, char[] Alphabet, int Solutions) throws IOException
+	public static int FindSolutions(String CodedWord, boolean[] LettersAvailable) throws IOException 
 	{
-		for (int i = 0; i < 26; i++)
-		{
-			String NewWord = Word.toUpperCase();
-			if (LettersAvailable[i])
-			{
-				LettersAvailable[i] = false;
-				char ReplaceNum = (RecursiveLevel + "").charAt(0);
-				NewWord = NewWord.replace(ReplaceNum, Alphabet[i]);
-				NewWord = NewWord.toLowerCase();
-				if (Loops > 1)
-				{
-					Loops--;
-					Solutions = FindPossibleSolutions(Loops, NewWord, RecursiveLevel+1, LettersAvailable, Alphabet, Solutions);
-					Loops++;
-				}else
-				{
-					if (CheckWord(NewWord))
-					{
-						Solutions++;
-						PossibleSolutions.add(NewWord);
-					}
-				}
-				LettersAvailable[i] = true;
-			}else
-			{
-				continue;
-			}
-		}
-		return Solutions;
+		Word Dummy = new Word();
+		return Dummy.FindPossibleSolutions(CodedWord, LettersAvailable);
 	}
 	
-	public int FindPossibleSolutions(int Blanks, String CodedWord, boolean[] LettersAvailable) throws IOException 
+	public int FindPossibleSolutions(String CodedWord, boolean[] LettersAvailable) throws IOException 
 	{
 		int WordLength = CodedWord.length();
 		BufferedReader Input =  new BufferedReader(new FileReader(System.getenv("APPDATA") + "/.CodeCracker/Words" + WordLength + ".txt"));
@@ -248,7 +227,16 @@ public class Word
 			if (Match)
 			{
 				Solutions++;
-				PossibleSolutions.add(DictionaryWord);
+				if (!Dummy)
+				{
+					PossibleSolutions.add(DictionaryWord);
+				}else
+				{
+					if (!DictionaryWord.equals(CodedWord))
+					{
+						System.out.println(DictionaryWord);
+					}
+				}
 			}
 		}
 		Input.close();
